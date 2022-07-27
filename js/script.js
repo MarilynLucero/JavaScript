@@ -8,10 +8,10 @@ const suma = (a,b) => a + b;
 const descuento = (x, y) => x * y;
 const interes = descuento;
 const carritoLibro= [];
-const libroStock = [{ nombre:'Cementerio De Animales', autor:'Stephen King', editorial:'Alfaguara', costo:'$5100'}, {nombre:'Battle Royale', autor:'Koushun Takami', editorial:'Booket', costo:'$2500'},{nombre:'La Vida Invisible De Addie Larue', autor:'Victoria Schwab', editorial:'Urano', costo:'$3500'},{nombre:'Una Breve Historia De Casi Todo', autor:'Bryson Bill', editorial:'Corre la voz', costo:'$2400'},{nombre:'Asesino De Brujas, La Bruja Blanca', autor:'Shelby Mahurin', editorial:'PUCK', costo:'$2900'}];
+const libroStock = [{ nombre:'Cementerio De Animales', autor:'Stephen King', editorial:'Alfaguara', costo:'$5100', stock: 2}, {nombre:'Battle Royale', autor:'Koushun Takami', editorial:'Booket', costo:'$2500', stock: 4},{nombre:'La Vida Invisible De Addie Larue', autor:'Victoria Schwab', editorial:'Urano', costo:'$3500', stock: 0},{nombre:'Una Breve Historia De Casi Todo', autor:'Bryson Bill', editorial:'Corre la voz', costo:'$2400', stock: 0},{nombre:'Asesino De Brujas, La Bruja Blanca', autor:'Shelby Mahurin', editorial:'PUCK', costo:'$2900', stock: 1}];
 
 function menu(){
-    let menuLibro= prompt('Elegí la opción deseada: \n1-Consulta de stock. \n2-Cotizacion del producto. \n3-Mi carrito.')
+    let menuLibro= prompt('Elegí la opción deseada: \n1-Consulta de stock. \n2-Cotizacion del producto. \n3-Mi carrito. \n4-Consulta nuestro stock disponible.')
 
     switch(menuLibro){
         case '1':
@@ -25,6 +25,9 @@ function menu(){
         case '3':
             miCarrito();
             break; 
+        case '4':
+            buscaLibro();
+            break;
         default:
             alert('Ingresaste una opción no válida, intenta nuevamente.')
             break;    
@@ -153,9 +156,14 @@ function miCarrito(){
     }
 }
 
-
-
-
-
-
+//buscar libro
+function buscaLibro(){
+    const encontrado = libroStock.filter((libro)=>libro.stock>0)
+    let mensajeBuscar= 'Estos son los libros que tenemos en stock: \n'
+    for(let i=0; i<encontrado.length; i++ ){
+        //encuentra los libros en stock.
+        mensajeBuscar+= i + '-' + encontrado[i].nombre + ' ~ ' + encontrado[i].autor + '. Tenemos ' + encontrado[i].stock + ' unidades, ' + encontrado[i].costo + '\n';
+    };
+    alert(mensajeBuscar);
+}
 menu();
