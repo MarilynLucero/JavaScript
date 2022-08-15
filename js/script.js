@@ -3,6 +3,8 @@
 //descuento adicional si paga con tarjetas del banco santander rio debito 10%
 //1c- 0% 3c-8% 6c-12% 
 
+ 
+
 const iva = (x) => (x * 0.21);
 const suma = (a, b) => a + b;
 const descuento = (x, y) => x * y;
@@ -68,9 +70,10 @@ function consulta() {
     //Objeto: Nombre, autor, editorial, costo.
     let mensajeStock = `<h1>Estos son los libros a disposición. \n</h1><ul class="list-group">`
     for (let i = 0; i < libroStock.length; i++) {
-        mensajeStock += `<li class="list-group-item list-group-item-primary"> ${libroStock[i].nombre} ~ ${libroStock[i].autor} ~ ${libroStock[i].editorial}. 
-        ${libroStock[i].costo} 
-        <button id=${libroStock[i].id} type="button" class="btn btn-primary agregando">Agregar</button>
+        const {nombre, autor, editorial, costo, id} = libroStock[i]; //desestructuracion
+        mensajeStock += `<li class="list-group-item list-group-item-primary"> ${nombre} ~ ${autor} ~ ${editorial}. 
+        ${costo} 
+        <button id=${id} type="button" class="btn btn-primary agregando">Agregar</button>
          </li>`
     };
     mensajeStock += `</ul>`;
@@ -78,7 +81,7 @@ function consulta() {
     const agregando = document.getElementsByClassName("agregando");
     for (let i = 0; i < agregando.length; i++) {
         agregando[i].addEventListener("click", () => {
-            Agregar(agregando[i].id)
+            agregar(agregando[i].id)
         });
     };
 
@@ -115,11 +118,9 @@ function cotizacionMetodo(precioLibro) {
     <button id="botonCotizar2" type="button" class="btn btn-warning">Continuá</button>`
     document.getElementById("botonCotizar2").addEventListener('click', () => {
         let formaDePago = "";
-        if (true == document.getElementById("efectivo").value) {
-            formaDePago = "1";
-        } else {
-            formaDePago = "2";
-        }
+        (true == document.getElementById("efectivo").value) ? formaDePago = "1": formaDePago = "2"; //aplicando operador ternario
+
+
         const precioConIva = suma(precioLibro, iva(precioLibro));
         let precioTotal = 0;
 
@@ -127,7 +128,7 @@ function cotizacionMetodo(precioLibro) {
             const descuentoAplicado = descuento(precioConIva, 0.05);
             precioTotal = precioConIva - descuentoAplicado;
             contentcotizar.innerHTML = `<h1>El valor de tu libro es $${precioTotal}</h1>`;
-
+        
 
         } else {
             cotizacionTarjeta(precioConIva);
@@ -154,11 +155,7 @@ function cotizacionTarjeta(precioConIva) {
     <button id="botonCotizar3" type="button" class="btn btn-warning">Continuá</button>`
     document.getElementById("botonCotizar3").addEventListener('click', () => {
         let debitoCredito = "";
-        if (true == document.getElementById("debito").value) {
-            debitoCredito = "1";
-        } else {
-            debitoCredito = "2";
-        }
+        (true == document.getElementById("debito").value) ? debitoCredito = "1" : debitoCredito = "2"; //aplicando operador ternario
         switch (debitoCredito) {
             case '1':
                 //Pago con otra tarjeta
@@ -235,24 +232,27 @@ function cotizacionCredito(precioConIva) {
 
 function miCarrito() {
     let mensajeCarrito = `<h1>Estos son los libros en tu carrito \n</h1>`
+    console.log(carritoLibro.length);
     for (let i = 0; i < carritoLibro.length; i++) {
         //carritolibro guarda la posicion del libro en libroStock.
+        const {nombre, autor, editorial, costo, id} = libroStock[carritoLibro[i]]; //desestructuracion
         mensajeCarrito += `<div class="card" style="width: 18rem;">
         <div class="card-body">
-        <h5 class="card-title">${libroStock[carritoLibro[i]].nombre}</h5>
-        <p class="card-text">Este libro es de ${libroStock[carritoLibro[i]].autor}, de la editorial ${libroStock[carritoLibro[i]].editorial}. Por un precio de ${libroStock[carritoLibro[i]].costo}.</p>
-        <a href="#" id=${libroStock[carritoLibro[i]].id} class="btn btn-primary eliminando">Eliminar del carrito</a>
+        <h5 class="card-title">${nombre}</h5>
+        <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
+        <a href="#" id=${id} class="btn btn-primary eliminando">Eliminar del carrito</a>
         </div>
         </div>`
+        console.log(carritoLibro.length);
     };
+    
     carritoDelete.innerHTML = mensajeCarrito;
     const eliminando = document.getElementsByClassName("eliminando");
     for (let i = 0; i < eliminando.length; i++) {
         eliminando[i].addEventListener("click", () => {
-            Eliminar(eliminando[i].id)
+            eliminar(eliminando[i].id)
         });
     };
-    guardeCarrito();
 };
 
 
@@ -262,11 +262,12 @@ function buscaLibro() {
     let mensajeBuscar = `<h1>Estos son los libros que tenemos disponibles.</h1>`
     for (let i = 0; i < encontrado.length; i++) {
         //encuentra los libros en stock.
+        const {nombre, autor, editorial, costo, id} = encontrado[i]; //desestructuracion
         mensajeBuscar += `<div class="card" style="width: 18rem;">
         <div class="card-body">
-          <h5 class="card-title">${encontrado[i].nombre}</h5>
-          <p class="card-text">Este libro es de ${encontrado[i].autor}, de la editorial ${encontrado[i].editorial}. Por un precio de ${encontrado[i].costo}.</p>
-          <a href="#" id=${encontrado[i].id} class="btn btn-primary agregandodeStock">Agregar al carrito</a>
+          <h5 class="card-title">${nombre}</h5>
+          <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
+          <a href="#" id=${id} class="btn btn-primary agregandodeStock">Agregar al carrito</a>
         </div>
       </div>`
     };
@@ -274,10 +275,9 @@ function buscaLibro() {
     const agregandodeStock = document.getElementsByClassName("agregandodeStock");
     for (let i = 0; i < agregandodeStock.length; i++) {
         agregandodeStock[i].addEventListener("click", () => {
-            Agregar(agregandodeStock[i].id)
+            agregar(agregandodeStock[i].id)
         });
     };
-    guardeCarrito();
 };
 
 //Agregar
@@ -289,24 +289,33 @@ function buscarporId(array, id) {
     };
 };
 
-function Agregar(id) {
-    let libroAgregar = buscarporId(libroStock, id);
-    carritoLibro.push(libroAgregar);
-    alertdiv.innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    Libro agregado con éxito.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>`
+function agregar(id) {
+    const arg = [libroStock, id]
+    
+    let libroAgregar = buscarporId(...arg); //aplicando spread
+    
+    carritoLibro.push(libroAgregar); 
+    Swal.fire({
+        title: 'Libro agregado con éxito!',
+        text: 'Se agregó tu libro al carrito',
+        icon: 'success',
+        confirmButtonText: 'Continuar'
+    })
+  guardeCarrito();
 };
 
 //Eliminar
-function Eliminar(id) {
+
+function eliminar(id) {
     let libroEliminar = buscarporId(libroStock, id);
     libroEliminar = carritoLibro.indexOf(libroEliminar);
     carritoLibro.splice(libroEliminar, 1);
-    alertdiv.innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    Libro Eliminado con éxito.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>`
+    Swal.fire({
+        title: 'Libro eliminado!',
+        text: 'Se ha eliminado con éxito tu libro!',
+        icon: 'error',
+        confirmButtonText: 'Continuar'
+    });
     guardeCarrito();
 };
 
@@ -318,5 +327,21 @@ function guardeCarrito() {
 
 function cargarCarrito(){
     carritoLibro= JSON.parse(sessionStorage.getItem('carrito'));
+    carritoLibro!=null ? carritoLibro : carritoLibro=[]; //operador ternario
 };
-cargarCarrito();    
+   
+
+function mapaLocalizacion(){
+let map = L.map('map').setView([-32.896696, -68.837596], 17);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+L.marker([-32.896696, -68.837596]).addTo(map)
+    .bindPopup('Estamos en Rondeau.<br> Esq. San Juan.')
+    .openPopup();
+};
+
+mapaLocalizacion();
+cargarCarrito(); 

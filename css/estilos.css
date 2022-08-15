@@ -2,3 +2,8 @@
     width: 25%;
     margin-left: 10px;
 }
+
+#map { 
+    height: 800px;
+    width: 800px; 
+}
