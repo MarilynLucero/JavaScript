@@ -20,42 +20,7 @@ const carritoDelete = document.querySelector("#carritoDelete")
 const librosVerificar = document.querySelector("#librosVerificar")
 
 let carritoLibro = [];
-const libroStock = [{
-    id: "libroA",
-    nombre: 'Cementerio De Animales',
-    autor: 'Stephen King',
-    editorial: 'Alfaguara',
-    costo: '$5100',
-    stock: 2
-}, {
-    id: "libroB",
-    nombre: 'Battle Royale',
-    autor: 'Koushun Takami',
-    editorial: 'Booket',
-    costo: '$2500',
-    stock: 4
-}, {
-    id: "libroC",
-    nombre: 'La Vida Invisible De Addie Larue',
-    autor: 'Victoria Schwab',
-    editorial: 'Urano',
-    costo: '$3500',
-    stock: 0
-}, {
-    id: "libroD",
-    nombre: 'Una Breve Historia De Casi Todo',
-    autor: 'Bryson Bill',
-    editorial: 'Corre la voz',
-    costo: '$2400',
-    stock: 0
-}, {
-    id: "libroE",
-    nombre: 'Asesino De Brujas, La Bruja Blanca',
-    autor: 'Shelby Mahurin',
-    editorial: 'PUCK',
-    costo: '$2900',
-    stock: 1
-}];
+let libroStock = [];
 
 const loader = () => {
     verificar.addEventListener("click", consulta, false);
@@ -69,22 +34,24 @@ function consulta() {
     //Consulta de stock, agregar un carrito de compra.
     //Objeto: Nombre, autor, editorial, costo.
     let mensajeStock = `<h1>Estos son los libros a disposición. \n</h1><ul class="list-group">`
-    for (let i = 0; i < libroStock.length; i++) {
-        const {nombre, autor, editorial, costo, id} = libroStock[i]; //desestructuracion
+    traeStock().then((libroStock)=>{
+        libroStock.forEach((libro) => {
+        const {nombre, autor, editorial, costo, id} = libro; //desestructuracion
         mensajeStock += `<li class="list-group-item list-group-item-primary"> ${nombre} ~ ${autor} ~ ${editorial}. 
         ${costo} 
         <button id=${id} type="button" class="btn btn-primary agregando">Agregar</button>
          </li>`
-    };
-    mensajeStock += `</ul>`;
-    librosVerificar.innerHTML = mensajeStock;
-    const agregando = document.getElementsByClassName("agregando");
-    for (let i = 0; i < agregando.length; i++) {
-        agregando[i].addEventListener("click", () => {
-            agregar(agregando[i].id)
         });
-    };
-
+    
+        mensajeStock += `</ul>`;
+        librosVerificar.innerHTML = mensajeStock;
+        const agregando = document.getElementsByClassName("agregando");
+        for (let i = 0; i < agregando.length; i++) {
+            agregando[i].addEventListener("click", () => {
+                agregar(agregando[i].id)
+            });
+        };
+    });
 };
 
 function cotizacion() {
@@ -232,52 +199,55 @@ function cotizacionCredito(precioConIva) {
 
 function miCarrito() {
     let mensajeCarrito = `<h1>Estos son los libros en tu carrito \n</h1>`
-    console.log(carritoLibro.length);
-    for (let i = 0; i < carritoLibro.length; i++) {
-        //carritolibro guarda la posicion del libro en libroStock.
-        const {nombre, autor, editorial, costo, id} = libroStock[carritoLibro[i]]; //desestructuracion
-        mensajeCarrito += `<div class="card" style="width: 18rem;">
-        <div class="card-body">
-        <h5 class="card-title">${nombre}</h5>
-        <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
-        <a href="#" id=${id} class="btn btn-primary eliminando">Eliminar del carrito</a>
-        </div>
-        </div>`
-        console.log(carritoLibro.length);
-    };
-    
-    carritoDelete.innerHTML = mensajeCarrito;
-    const eliminando = document.getElementsByClassName("eliminando");
-    for (let i = 0; i < eliminando.length; i++) {
-        eliminando[i].addEventListener("click", () => {
-            eliminar(eliminando[i].id)
-        });
-    };
+    traeStock().then((libroStock)=>{
+        for (let i = 0; i < carritoLibro.length; i++) {
+            //carritolibro guarda la posicion del libro en libroStock.
+            const {nombre, autor, editorial, costo, id} = libroStock[carritoLibro[i]]; //desestructuracion
+            mensajeCarrito += `<div class="card" style="width: 18rem;">
+            <div class="card-body">
+            <h5 class="card-title">${nombre}</h5>
+            <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
+            <a href="#" id=${id} class="btn btn-primary eliminando">Eliminar del carrito</a>
+            </div>
+            </div>`
+            console.log(carritoLibro.length);
+        };
+        
+        carritoDelete.innerHTML = mensajeCarrito;
+        const eliminando = document.getElementsByClassName("eliminando");
+        for (let i = 0; i < eliminando.length; i++) {
+            eliminando[i].addEventListener("click", () => {
+                eliminar(libroStock, eliminando[i].id)
+            });
+        };
+    });
 };
 
 
 //buscar libro
 function buscaLibro() {
-    const encontrado = libroStock.filter((libro) => libro.stock > 0)
-    let mensajeBuscar = `<h1>Estos son los libros que tenemos disponibles.</h1>`
-    for (let i = 0; i < encontrado.length; i++) {
-        //encuentra los libros en stock.
-        const {nombre, autor, editorial, costo, id} = encontrado[i]; //desestructuracion
-        mensajeBuscar += `<div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">${nombre}</h5>
-          <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
-          <a href="#" id=${id} class="btn btn-primary agregandodeStock">Agregar al carrito</a>
-        </div>
-      </div>`
-    };
-    contentstock.innerHTML = mensajeBuscar;
-    const agregandodeStock = document.getElementsByClassName("agregandodeStock");
-    for (let i = 0; i < agregandodeStock.length; i++) {
-        agregandodeStock[i].addEventListener("click", () => {
-            agregar(agregandodeStock[i].id)
-        });
-    };
+    traeStock().then((libroStock)=>{
+        const encontrado = libroStock.filter((libro) => libro.stock > 0)
+        let mensajeBuscar = `<h1>Estos son los libros que tenemos disponibles.</h1>`
+        for (let i = 0; i < encontrado.length; i++) {
+            //encuentra los libros en stock.
+            const {nombre, autor, editorial, costo, id} = encontrado[i]; //desestructuracion
+            mensajeBuscar += `<div class="card" style="width: 18rem;">
+            <div class="card-body">
+            <h5 class="card-title">${nombre}</h5>
+            <p class="card-text">Este libro es de ${autor}, de la editorial ${editorial}. Por un precio de ${costo}.</p>
+            <a href="#" id=${id} class="btn btn-primary agregandodeStock">Agregar al carrito</a>
+            </div>
+        </div>`
+        };
+        contentstock.innerHTML = mensajeBuscar;
+        const agregandodeStock = document.getElementsByClassName("agregandodeStock");
+        for (let i = 0; i < agregandodeStock.length; i++) {
+            agregandodeStock[i].addEventListener("click", () => {
+                agregar(libroStock,agregandodeStock[i].id)
+            });
+        };
+    });
 };
 
 //Agregar
@@ -289,7 +259,7 @@ function buscarporId(array, id) {
     };
 };
 
-function agregar(id) {
+function agregar(libroStock,id) {
     const arg = [libroStock, id]
     
     let libroAgregar = buscarporId(...arg); //aplicando spread
@@ -306,7 +276,7 @@ function agregar(id) {
 
 //Eliminar
 
-function eliminar(id) {
+function eliminar(libroStock, id) {
     let libroEliminar = buscarporId(libroStock, id);
     libroEliminar = carritoLibro.indexOf(libroEliminar);
     carritoLibro.splice(libroEliminar, 1);
@@ -328,8 +298,7 @@ function guardeCarrito() {
 function cargarCarrito(){
     carritoLibro= JSON.parse(sessionStorage.getItem('carrito'));
     carritoLibro!=null ? carritoLibro : carritoLibro=[]; //operador ternario
-};
-   
+}; 
 
 function mapaLocalizacion(){
 let map = L.map('map').setView([-32.896696, -68.837596], 17);
@@ -342,6 +311,13 @@ L.marker([-32.896696, -68.837596]).addTo(map)
     .bindPopup('Estamos en Rondeau.<br> Esq. San Juan.')
     .openPopup();
 };
+
+async function traeStock() {
+    const response = await fetch('./data/libros.json');
+    const data = await response.json();
+    console.log(data);
+    return data;
+}
 
 mapaLocalizacion();
 cargarCarrito(); 

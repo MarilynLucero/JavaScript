@@ -1,0 +1,36 @@
+[{
+    "id": "libroA",
+    "nombre": "Cementerio De Animales",
+    "autor": "Stephen King",
+    "editorial": "Alfaguara",
+    "costo": "$5100",
+    "stock": 2
+}, {
+    "id": "libroB",
+    "nombre": "Battle Royale",
+    "autor": "Koushun Takami",
+    "editorial": "Booket",
+    "costo": "$2500",
+    "stock": 4
+}, {
+    "id": "libroC",
+    "nombre": "La Vida Invisible De Addie Larue",
+    "autor": "Victoria Schwab",
+    "editorial": "Urano",
+    "costo": "$3500",
+    "stock": 0
+}, {
+    "id": "libroD",
+    "nombre": "Una Breve Historia De Casi Todo",
+    "autor": "Bryson Bill",
+    "editorial": "Corre la voz",
+    "costo": "$2400",
+    "stock": 0
+}, {
+    "id": "libroE",
+    "nombre": "Asesino De Brujas, La Bruja Blanca",
+    "autor": "Shelby Mahurin",
+    "editorial": "PUCK",
+    "costo": "$2900",
+    "stock": 1
+}]
