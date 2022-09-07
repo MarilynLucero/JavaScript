@@ -63,7 +63,12 @@ function cotizacion() {
      <button id="botonCotizar1" type="button" class="btn btn-warning">Continuá</button>`
     document.getElementById("botonCotizar1").addEventListener('click', () => {
         let precioLibro = parseInt(document.getElementById("campoCotizar1").value);
+        if (isNaN(precioLibro)) {
+            alert("El dato ingresado es inválido.")
+        }else{
         cotizacionMetodo(precioLibro);
+        };
+
     });
 }
 
